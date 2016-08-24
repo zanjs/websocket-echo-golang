@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>WebSocket 原生玩法</title>
+</head>
+
+<body>
+    <div class="">
+        <pre>
+            点击    '打开' = 创建到服务器的连接， 
+                    '发送' = 消息发送到服务器
+                    '关闭' = 关闭连接。 
+            您可以更改消息并发送多次。
+        <pre>
+    </div>
+    <div class="">
+        <form>
+            <button id="open">打开</button>
+            <button id="close">关闭</button>
+            <input id="input" type="text" value="Hello WebSocket!">
+            <button id="send">发送</button>
+        </form>
+    </div>
+    <br />
+    <hr>
+    <br />
+    <div id="output">
+    </div>
+</body>
+<script>
+    window.addEventListener("load", function(evt) {
+
+        var output = document.getElementById("output");
+        var input = document.getElementById("input");
+        var ws;
+
+        var print = function(message) {
+            var d = document.createElement("div");
+            d.innerHTML = message;
+            output.appendChild(d);
+        };
+
+        document.getElementById("open").onclick = function(evt) {
+            if (ws) {
+                return false;
+            }
+            ws = new WebSocket("{{.}}");
+            ws.onopen = function(evt) {
+                print("开启服务");
+            }
+            ws.onclose = function(evt) {
+                print("关闭服务");
+                ws = null;
+            }
+            ws.onmessage = function(evt) {
+                print("响应: " + evt.data);
+            }
+            ws.onerror = function(evt) {
+                print("错误: " + evt.data);
+            }
+            return false;
+        };
+
+        document.getElementById("send").onclick = function(evt) {
+            if (!ws) {
+                return false;
+            }
+            print("发送: " + input.value);
+            ws.send(input.value);
+            return false;
+        };
+
+        document.getElementById("close").onclick = function(evt) {
+            if (!ws) {
+                return false;
+            }
+            ws.close();
+            return false;
+        };
+
+    });
+</script>
+
+</html>
