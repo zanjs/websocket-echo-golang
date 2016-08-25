@@ -3,15 +3,17 @@
 package main
 
 import (
+    "fmt"
 	"flag"
 	"html/template"
 	"log"
 	"net/http"
-
 	"github.com/gorilla/websocket"
 )
 
-var addr = flag.String("addr", "localhost:8080", "http service address")
+var url = "localhost:8080"
+
+var addr = flag.String("addr", url, "http service address")
 
 var upgrader = websocket.Upgrader{} // use default options
 
@@ -42,6 +44,7 @@ func home(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+    fmt.Printf("open: "+ url +" \n")
 	flag.Parse()
 	log.SetFlags(0)
 	http.HandleFunc("/echo", echo)
@@ -49,4 +52,4 @@ func main() {
 	log.Fatal(http.ListenAndServe(*addr, nil))
 }
 
-var homeTemplate = template.Must(template.ParseFiles("index.html"))
+var homeTemplate = template.Must(template.ParseFiles("temp/index.html"))
